@@ -1,12 +1,36 @@
 {
   "compilerOptions": {
+    // --- Target & Module System ---
+    // 'target': Compile to ES2020 (a modern JS version compatible with recent Node.js).
     "target": "ES2020",
-    "module": "commonjs",
-    "rootDir": "src",
-    "outDir": "dist",
+    // 'module': Use CommonJS, the standard module system for Node.js.
+    "module": "CommonJS",
+    // 'moduleResolution': How TS finds modules, 'node' is the standard for Node.js.
+    "moduleResolution": "node",
+
+    // --- Output & Location ---
+    // 'outDir': Where the compiled JavaScript will go.
+    "outDir": "./dist",
+    // 'rootDir': Where our source TypeScript code lives.
+    "rootDir": "./src",
+
+    // --- Strictness & Best Practices (¡IMPORTANT!) ---
+    // 'strict': Enables all strict type-checking options. This is the #1 reason to use TS.
     "strict": true,
+    // 'esModuleInterop': Allows better compatibility between CommonJS and ES modules.
     "esModuleInterop": true,
+    // 'forceConsistentCasingInFileNames': Prevents bugs related to case-sensitivity.
     "forceConsistentCasingInFileNames": true,
-    "skipLibCheck": true
-  }
+    // 'skipLibCheck': Skips type checking of declaration files (.d.ts) for faster compilation.
+    "skipLibCheck": true,
+
+    // --- Source Maps (for Debugging) ---
+    // 'sourceMap': Generates .map files, which let you debug your original .ts code
+    // even though the .js code is what's running.
+    "sourceMap": true
+  },
+  // 'include': Tells the compiler which files to process. Only files inside 'src'.
+  "include": ["src/**/*"],
+  // 'exclude': Tells the compiler what to ignore.
+  "exclude": ["node_modules"]
 }

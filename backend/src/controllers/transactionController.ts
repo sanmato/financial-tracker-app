@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import Transaction, { ITransaction } from "../models/transaction";
+import Transaction, { ITransaction } from "../models/Transaction.model";
 
 // Controlador para obtener todas las transacciones
 export const getTransactions = async (_: Request, res: Response) => {

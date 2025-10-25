@@ -1,0 +1,37 @@
+# docker-compose.yml
+
+# 'services' is the main block where we define our containers
+services:
+
+  # --- Our Node.js Backend Service ---
+  backend:
+    build:
+      context: ./backend # Use the Dockerfile found in the './backend' folder
+    container_name: financial_tracker_backend
+    ports:
+      - "3000:3000" # Map host port 3000 to container port 3000
+    volumes:
+      # "Hot Reload" Volume: This is a key feature for development.
+      # It maps your local './backend/src' folder to the '/app/src'
+      # folder inside the container. When you save a file on your
+      # machine, nodemon (inside the container) sees it and restarts.
+      - ./backend/src:/app/src
+    env_file:
+      - ./.env # Load environment variables from the .env file
+    depends_on:
+      - mongo # Tell Docker to start the 'mongo' service before this one
+
+  # --- Our MongoDB Database Service ---
+  mongo:
+    image: mongo:latest # Use the official 'mongo' image from Docker Hub
+    container_name: financial_tracker_mongo
+    ports:
+      - "27017:27017" # Map host port (for debugging) to container port
+    volumes:
+      # Persistence: This maps your local './mongo_data' folder
+      # (which I saw in your screenshot) to the folder where
+      # Mongo stores its data inside the container.
+      # !! This is CRITICAL for saving your data. !!
+      - ./mongo_data:/data/db
+    env_file:
+      - ./.env # Load the same .env file for Mongo's credentials

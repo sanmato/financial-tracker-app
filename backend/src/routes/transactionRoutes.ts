@@ -1,5 +1,5 @@
 import { Router } from "express";
-import transaction from "../models/transaction";
+import transaction from "../models/Transaction.model";
 
 const router = Router();
 

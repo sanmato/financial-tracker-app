@@ -1,0 +1,26 @@
+# backend/.dockerignore
+
+# --- Explicación ---
+# Esto es para Docker lo que .gitignore es para Git.
+# Evita que el comando 'COPY .' en el Dockerfile
+# copie archivos innecesarios al contenedor, haciendo
+# el 'build' más rápido y la imagen más limpia.
+
+# Ignora la carpeta de dependencias de Node.
+# Las instalaremos DENTRO del contenedor usando RUN npm install.
+node_modules
+
+# Ignora la carpeta de JavaScript compilado.
+# La generaremos DENTRO del contenedor usando RUN npm run build.
+dist
+
+# Ignora los logs de npm
+npm-debug.log*
+
+# Ignora el propio Dockerfile, no necesita estar dentro de la imagen.
+Dockerfile
+
+# ¡IMPORTANTE! Ignora el archivo de variables de entorno.
+# Estas se inyectarán de forma segura en 'docker-compose.yml',
+# NUNCA deben copiarse en la imagen.
+.env

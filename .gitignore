@@ -1,0 +1,36 @@
+# === Explicación ===
+# Este archivo le dice a Git qué archivos o carpetas debe ignorar
+# y NUNCA incluir en el control de versiones. Es vital para la seguridad
+# (ignorar contraseñas en .env) y para mantener el repositorio limpio
+# (ignorar 'node_modules').
+
+# --- Dependencias ---
+# Ignora la carpeta de paquetes de Node, que puede pesar cientos de MB.
+# Se regenera usando 'npm install'.
+node_modules/
+
+# --- Build / Compilado ---
+# Ignora la carpeta 'dist' donde TypeScript pondrá el JavaScript compilado.
+dist/
+
+# --- Datos Locales ---
+# Ignora los datos de la base de datos de Docker que vi en tu captura.
+mongo_data/
+
+# --- Seguridad: Archivos de Entorno ---
+# ¡MUY IMPORTANTE! Este archivo contendrá nuestras contraseñas y
+# claves de API. NUNCA debe subirse a un repositorio público.
+.env
+.env.*
+
+# --- Logs ---
+# Ignora archivos de registro (logs) de errores o información.
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# --- Archivos del Sistema Operativo ---
+# Archivos basura generados por MacOS y Windows.
+.DS_Store
+Thumbs.db

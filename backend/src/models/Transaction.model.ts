@@ -1,22 +1,52 @@
-import mongoose, { Schema, Document } from "mongoose";
+// backend/src/models/Transaction.model.ts
+import { Schema, model, Document } from "mongoose";
 
+// 1. TypeScript Interface
 export interface ITransaction extends Document {
   title: string;
   amount: number;
   date: Date;
-  type: "income" | "expense"; //Esto sería el ingreso o gasto
+  type: "income" | "expense";
   category: string;
 }
 
-const TransactionSchema: Schema = new Schema({
-  title: { type: String, required: true },
-  amount: { type: Number, required: true }, //El monto de la transacción
-  date: { type: Date, required: true, default: Date.now }, //La fecha de la transacción
-  type: { type: String, enum: ["income", "expense"], required: true }, //El tipo de transacción
-  category: { type: String, required: true }, //La categoría de la transacción
-});
-
-export default mongoose.model<ITransaction>(
-  "Transaction", // Nombre de la colección -> MongoDB lo pluraliza: "transactions"
-  TransactionSchema
+// 2. Mongoose Schema
+const transactionSchema = new Schema<ITransaction>(
+  {
+    title: {
+      type: String,
+      required: [true, "Title is required."],
+      trim: true,
+      maxlength: [100, "Title cannot be more than 100 characters."],
+    },
+    amount: {
+      type: Number,
+      required: [true, "Amount is required."],
+    },
+    date: {
+      type: Date,
+      required: [true, "Date is required."],
+      default: Date.now,
+    },
+    type: {
+      type: String,
+      required: [true, "Type is required (income or expense)."],
+      enum: ["income", "expense"],
+    },
+    category: {
+      type: String,
+      required: [true, "Category is required."],
+      trim: true,
+      maxlength: [50, "Category cannot be more than 50 characters."],
+    },
+  },
+  {
+    // 3. Schema Options: Best Practice
+    timestamps: true,
+  }
 );
+
+// 4. The Model
+const Transaction = model<ITransaction>("Transaction", transactionSchema);
+
+export default Transaction;

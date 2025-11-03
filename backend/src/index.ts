@@ -2,6 +2,7 @@
 import express, { Express, Request, Response } from "express";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
+import cors from "cors";
 
 // Import our new routes
 import transactionRoutes from "./routes/transaction.routes";
@@ -29,6 +30,9 @@ const app: Express = express();
 // This is crucial. It tells Express to automatically parse
 // incoming JSON request bodies (like the data from our form).
 app.use(express.json());
+
+// Enable CORS for all routes
+app.use(cors());
 
 // --- Routes ---
 

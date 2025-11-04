@@ -91,20 +91,24 @@ function App() {
   };
 
   return (
-    <div>
-      <header>
-        <h1>Financial Tracker</h1>
-      </header>
+    <div className="bg-gray-100 dark:bg-gray-950 min-h-screen p-8">
+      <div className="max-w-4xl mx-auto">
+        <header className="mb-10">
+          <h1 className="text-4xl font-bold text-center text-gray-950 dark:text-white text-balance">
+            Financial Tracker
+          </h1>
+        </header>
 
-      <main>
-        {/*Pass the function like a 'prop' to form*/}
-        <TransactionForm onAddTransaction={handleAddTransaction} />
+        <main>
+          {/*Pass the function like a 'prop' to form*/}
+          <TransactionForm onAddTransaction={handleAddTransaction} />
 
-        <TransactionList
-          transactions={transactions}
-          onDeleteTransaction={handleDeleteTransaction}
-        />
-      </main>
+          <TransactionList
+            transactions={transactions}
+            onDeleteTransaction={handleDeleteTransaction}
+          />
+        </main>
+      </div>
     </div>
   );
 }

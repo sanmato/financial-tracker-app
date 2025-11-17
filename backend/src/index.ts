@@ -6,6 +6,7 @@ import cors from "cors";
 
 // Import our new routes
 import transactionRoutes from "./routes/transaction.routes";
+import userRoutes from "./routes/user.routes";
 
 // Load environment variables
 dotenv.config();
@@ -48,6 +49,7 @@ app.get("/", (req: Request, res: Response) => {
 // Tell the app to use our router for any request
 // that starts with '/api/transactions'
 app.use("/api/transactions", transactionRoutes);
+app.use("/api/users", userRoutes);
 
 // --- Database Connection Function ---
 

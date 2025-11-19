@@ -1,13 +1,19 @@
 // backend/src/controllers/transaction.controller.ts
 import { Request, Response } from "express";
 import Transaction from "../models/Transaction.model"; // Import the model
+import { AuthenticatedRequest } from "../middleware/auth.middleware";
 
 // @desc    Get all transactions
 // @route   GET /api/transactions
-export const getTransactions = async (req: Request, res: Response) => {
+export const getTransactions = async (
+  req: AuthenticatedRequest,
+  res: Response
+) => {
   try {
     // This is the logic: find all transactions, sort by newest first
-    const transactions = await Transaction.find().sort({ date: -1 });
+    const transactions = await Transaction.find({ user: req.user?._id }).sort({
+      date: -1,
+    });
 
     // Send the response
     res.status(200).json({
@@ -21,9 +27,12 @@ export const getTransactions = async (req: Request, res: Response) => {
   }
 };
 
-// @desc    Create a new transaction
+// @desc    Create a new transaction (FOR AUTHENTICATED USERS)
 // @route   POST /api/transactions
-export const createTransaction = async (req: Request, res: Response) => {
+export const createTransaction = async (
+  req: AuthenticatedRequest,
+  res: Response
+) => {
   try {
     // Get the data from the request body (the form)
     const { title, amount, date, type, category } = req.body;
@@ -35,6 +44,7 @@ export const createTransaction = async (req: Request, res: Response) => {
       date,
       type,
       category,
+      user: req.user?._id, // Associate transaction with the authenticated user
     });
 
     // Send the successful response (201 Created)
@@ -63,9 +73,30 @@ export const createTransaction = async (req: Request, res: Response) => {
 // @desc    Update a transaction
 // @route   PUT /api/transactions/:id
 
-export const updateTransaction = async (req: Request, res: Response) => {
+export const updateTransaction = async (
+  req: AuthenticatedRequest,
+  res: Response
+) => {
   try {
     const { id } = req.params;
+
+    //Verify transaction exists
+    const transaction = await Transaction.findById(id);
+    if (!transaction) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Transaction not found" });
+    }
+
+    //Compare user ownership of transaction with logged in user
+    if (transaction.user.toString() !== req.user?.id) {
+      return res
+        .status(401)
+        .json({
+          success: false,
+          message: "Not authorized to update this transaction",
+        });
+    }
 
     const updatedTransaction = await Transaction.findByIdAndUpdate(
       id,
@@ -75,11 +106,6 @@ export const updateTransaction = async (req: Request, res: Response) => {
         runValidators: true, // Re-run schema validators on update
       }
     );
-    if (!updatedTransaction) {
-      return res
-        .status(404)
-        .json({ success: false, message: "Transaction not found" });
-    }
     res.status(200).json({ success: true, data: updatedTransaction });
   } catch (error: any) {
     if (error.name === "ValidationError") {
@@ -97,16 +123,31 @@ export const updateTransaction = async (req: Request, res: Response) => {
 
 // @desc Delete a transaction
 // @route DELETE /api/transactions/:id
-export const deleteTransaction = async (req: Request, res: Response) => {
+export const deleteTransaction = async (
+  req: AuthenticatedRequest,
+  res: Response
+) => {
   try {
     const { id } = req.params;
 
-    const deletedTransaction = await Transaction.findByIdAndDelete(id);
-    if (!deletedTransaction) {
+    //Verify transaction exists
+    const transaction = await Transaction.findById(id);
+    if (!transaction) {
       return res
         .status(404)
         .json({ success: false, message: "Transaction not found" });
     }
+
+    //Compare user ownership of transaction with logged in user
+    if (transaction.user.toString() !== req.user?.id) {
+      return res
+        .status(401)
+        .json({
+          success: false,
+          message: "Not authorized to delete this transaction",
+        });
+    }
+    await transaction.deleteOne();
     res
       .status(200)
       .json({ success: true, message: "Transaction deleted successfully" });

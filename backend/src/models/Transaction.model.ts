@@ -1,5 +1,5 @@
 // backend/src/models/Transaction.model.ts
-import { Schema, model, Document } from "mongoose";
+import { Schema, model, Document, Types } from "mongoose";
 
 // 1. TypeScript Interface
 export interface ITransaction extends Document {
@@ -8,6 +8,7 @@ export interface ITransaction extends Document {
   date: Date;
   type: "income" | "expense";
   category: string;
+  user: Types.ObjectId;
 }
 
 // 2. Mongoose Schema
@@ -38,6 +39,11 @@ const transactionSchema = new Schema<ITransaction>(
       required: [true, "Category is required."],
       trim: true,
       maxlength: [50, "Category cannot be more than 50 characters."],
+    },
+    user: {
+      type: Schema.Types.ObjectId, //Reference to User model, special Mongoose type
+      ref: "User", //Tells Mongoose that this is refered to 'User' model
+      required: [true, "User reference is required."],
     },
   },
   {

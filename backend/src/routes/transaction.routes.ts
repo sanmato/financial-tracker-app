@@ -9,8 +9,11 @@ import {
   updateTransaction,
   deleteTransaction,
 } from "../controllers/transaction.controller";
+import { protect } from "../middleware/auth.middleware";
 
 const router = Router();
+
+// Protect all routes after this middleware
 
 /*
  * We group routes that share the same path.
@@ -18,13 +21,19 @@ const router = Router();
  * - GET /api/transactions
  * - POST /api/transactions
  */
-router.route("/").get(getTransactions).post(createTransaction);
+router
+  .route("/")
+  .get(protect, getTransactions)
+  .post(protect, createTransaction);
 /*
  * Routes for a specific ID
  *
  * - PUT /api/transactions/:id
  * - DELETE /api/transactions/:id
  */
-router.route("/:id").put(updateTransaction).delete(deleteTransaction);
+router
+  .route("/:id")
+  .put(protect, updateTransaction)
+  .delete(protect, deleteTransaction);
 
 export default router;
